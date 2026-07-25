@@ -1,4 +1,4 @@
-mport speech_recognition as sr
+import speech_recognition as sr
 import os
 
 def speak(text):
