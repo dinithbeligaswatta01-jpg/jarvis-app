@@ -1,50 +1,38 @@
 import speech_recognition as sr
 import os
+import time
 
 def speak(text):
     print(f"Jarvis: {text}")
-    # Termux API එක හරහා සිංහලෙන් කියවීමට si-lk language code එක පාවිච්චි කරයි
     os.system(f'termux-tts-speak -l si-LK "{text}"')
 
 def listen():
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("සවන් දෙමින් පවතී (Listening)...")
-        r.adjust_for_ambient_noise(source)
-        audio = r.listen(source)
+    print("සවන් දෙමින් පවතී (Listening for 5 seconds)...")
+    os.system("termux-microphone-record -f voice.wav -l 5 > /dev/null 2>&1")
+    time.sleep(5)
+    os.system("termux-microphone-record -q > /dev/null 2>&1")
 
+    r = sr.Recognizer()
     try:
-        print("තේරුම් ගනිමින් පවතී (Recognizing)...")
-        query = r.recognize_google(audio, language='si-LK')
-        print(f"You said: {query}")
-        return query.lower()
+        with sr.AudioFile("voice.wav") as source:
+            audio = r.record(source)
+            print("තේරුම් ගනිමින් පවතී (Recognizing)...")
+            query = r.recognize_google(audio, language='si-LK')
+            print(f"You said: {query}")
+            return query.lower()
     except Exception as e:
         return ""
 
-    try:
-        # language='si-LK' යෙදීමෙන් සිංහල වචන තේරුම් ගනී
-        command = r.recognize_google(audio, language='si-LK')
-        print(f"ඔබ පැවසූ දේ: {command}")
-        return command
-    except sr.UnknownValueError:
-        speak("කණගාටුයි, මට ඔබ කියූ දේ තේරුණේ නැහැ.")
-        return ""
-    except sr.RequestError:
-        speak("ඉන්ටර්නෙට් සම්බන්ධතාවයේ දෝෂයක් තියෙනවා.")
-        return ""
-
-if __name__ == "__main__":
-    # ඔබ ඉල්ලූ පරිදි ආරම්භක පණිවිඩය වෙනස් කරන ලදී
-    speak("හේ දිනිත්! නෝවා ආවා. මොනවා හරි වෙන්න ඕනිද මගෙන්?")
+if _name_ == "_main_":
+    speak(" දිනිත්! නෝවා ආවා. මොනවා හරි වෙන්න ඕනිද මගෙන්?")
     
     while True:
         query = listen()
         
-        # සිංහල විධානයන් (Voice Commands)
         if "හෙලෝ" in query or "කොහොමද" in query:
             speak("මම හොඳින් ඉන්නවා, ඔබට කොහොමද?")
         elif "නම මොකක්ද" in query:
-            speak("මගේ නම ජාර්විස්.")
-        elif "නවත්වන්න" in query or "ගොස් එන්නම්" in query or "නවත්තන්න" in query:
+            speak("මගේ නම ජාවීස්.")
+        elif "නවත්වන්න" in query or "ගොස් එන්නම්" in query:
             speak("සුබ දවසක්! මම නවතිනවා.")
             break
