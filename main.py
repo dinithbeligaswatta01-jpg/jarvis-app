@@ -23,7 +23,7 @@ def listen():
     except Exception as e:
         return ""
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     speak(" දිනිත්! නෝවා ආවා. මොනවා හරි වෙන්න ඕනිද මගෙන්?")
     
     while True:
