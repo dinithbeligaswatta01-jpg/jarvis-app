@@ -14,6 +14,14 @@ def listen():
         audio = r.listen(source)
 
     try:
+        print("තේරුම් ගනිමින් පවතී (Recognizing)...")
+        query = r.recognize_google(audio, language='si-LK')
+        print(f"You said: {query}")
+        return query.lower()
+    except Exception as e:
+        return ""
+
+    try:
         # language='si-LK' යෙදීමෙන් සිංහල වචන තේරුම් ගනී
         command = r.recognize_google(audio, language='si-LK')
         print(f"ඔබ පැවසූ දේ: {command}")
